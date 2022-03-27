@@ -1,18 +1,29 @@
 from tkinter import *
+from tkinter import filedialog
 import numpy as np
 from numpy import random, loadtxt
+from datetime import datetime
 from pfuncts import *
-import csv
+import pprint
+
+root = Tk()
+root.title('Parking Function List Selection')
+root.filename = filedialog.askopenfilename(
+    initialdir="generated_io_text_files/park_functions_generated", title="Select A File",
+    filetypes=(("csv files", "*.csv"), ("all files", "*.*")))
+# Change the file name here to match the csv file you wish to analyze
+pf_input_filename = root.filename
+
 
 pi = []
-spec = []
+
 non_desc = []
-order_perm = []
+
 inv_order_perm = []
-parking_functions = []
 
 
 def get_spec(pf):
+    spec = []
     for x in range(len(pf)):
         spec.append(0)
 
@@ -24,14 +35,16 @@ def get_spec(pf):
     return spec
 
 
-def get_nondesc(s):
+def get_nondesc(p):
+    s = p.copy()
     nd = sorted(s)
     return nd
 
 
-def get_ordperm(p, n):
+def get_ordperm(p):
+    order_perm = []
+    nd = get_nondesc(p)
     func_pi = p.copy()
-    nd = n.copy()
     for i in range(len(func_pi)):
         v = func_pi[i]
         for j in range(len(nd)):
@@ -43,7 +56,7 @@ def get_ordperm(p, n):
 
 
 def get_inv_ordperm(o):
-    op = o.copy()
+    op = get_ordperm(o)
     iop = []
     for i in range(len(op)):
         for j in range(len(op)):
@@ -52,15 +65,32 @@ def get_inv_ordperm(o):
     return iop
 
 
-parking_functions = loadtxt("PFS.csv", dtype=int, delimiter=",", unpack=False)
+parking_functions = loadtxt(pf_input_filename, dtype=int, delimiter=",", unpack=False)
 
 
-# with open("PFS.csv", "r") as csv_file:
-#     reader = csv.reader(csv_file)
-#     for row in reader:
-#         inner_list = [int(elt.strip()) for elt in row.split(',')]
-#         parking_functions.append(inner_list)
+now = datetime.now()
+date_string = now.strftime("%m-%d-%Y-%H-%M")
+f_name = str(len(parking_functions)) + "_ParkFunctsOutput_" + date_string
 
+root.filename = filedialog.asksaveasfilename(title="Select Save Location",
+                                             initialdir="generated_io_text_files/park_functions_outcome",
+                                             initialfile=f_name, defaultextension=".txt",
+                                             filetypes=(("text files", "*.txt"), ("all files", "*.*")))
 
-for x in parking_functions:
-    print(f"{x}   --outcome-->  {get_outcome(x)[0]} with a displacement of {get_outcome(x)[1]}")
+with open(root.filename, "a") as f:
+    for x in parking_functions:
+        f.write("\n\n")
+        this_function_dict = {
+                "original": list(x),
+                "n": len(x),
+                "isPF": pigeonhole_check(x),
+                "outcome": get_outcome(x)[0],
+                "displacement": get_outcome(x)[1],
+                "specification": get_spec(x),
+                "non-descending": get_nondesc(x),
+                "order_permutation": get_ordperm(x),
+                "inv-order-permutation": get_inv_ordperm(x)
+        }
+        pprint.pprint(this_function_dict, indent=4, width=100, sort_dicts=False, stream=f)
+
+root.mainloop()

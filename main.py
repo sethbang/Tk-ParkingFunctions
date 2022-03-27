@@ -13,7 +13,7 @@ result_frame = Frame(window, relief=SUNKEN, borderwidth=5, pady=10)
 result_frame.pack(fill=X)
 
 pi = []
-spec = []
+
 non_desc = []
 order_perm = []
 inv_order_perm = []
@@ -32,6 +32,7 @@ def add_click(number):
 
 
 def get_spec(pf):
+    spec = []
     for x in range(len(pf)):
         spec.append(0)
 

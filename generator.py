@@ -2,6 +2,9 @@ import numpy as np
 from numpy import random, loadtxt
 from pfuncts import *
 from datetime import datetime
+from tkinter import *
+
+root = Tk()
 
 functions_list = []
 
@@ -39,7 +42,7 @@ user_print = input("Would you like to print the generated functions to a text fi
 if user_print[0].upper() == 'Y':
     now = datetime.now()
     date_string = now.strftime("%m-%d-%Y-%H-%M-%S")
-    f_name = str(len(functions_list)) + "_ParkingFunctions_" + date_string + ".txt"
+    f_name = "generated_io_text_files/park_functions_generated/" + str(len(functions_list)) + "_ParkingFunctions_" + date_string + ".csv"
     with open(f_name, "w") as f:
         for x in functions_list:
             convert_arr = [str(element) for element in x]
