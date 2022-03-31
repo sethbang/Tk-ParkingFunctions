@@ -2,14 +2,14 @@ from tkinter import *
 import numpy as np
 from pfuncts import *
 
-window = Tk()
-window.title("Parking Functions")
-window.geometry("800x800")
-top_frame = Frame(window, relief=SUNKEN, borderwidth=5, pady=10)
+root = Tk()
+root.title("Parking Functions")
+root.geometry("800x800")
+top_frame = Frame(root, relief=SUNKEN, borderwidth=5, pady=10)
 top_frame.pack(fill=X)
-input_frame = Frame(window, borderwidth=5, pady=10)
+input_frame = Frame(root, borderwidth=5, pady=10)
 input_frame.pack(fill=X)
-result_frame = Frame(window, relief=SUNKEN, borderwidth=5, pady=10)
+result_frame = Frame(root, relief=SUNKEN, borderwidth=5, pady=10)
 result_frame.pack(fill=X)
 
 pi = []
@@ -137,4 +137,4 @@ displacement_label.grid(row=7, column=0, pady=15, sticky="e")
 displacement_result = Label(result_frame, text="", font=("Arial", 12))
 displacement_result.grid(row=7, column=1, pady=15, sticky="w")
 
-window.mainloop()
+root.mainloop()

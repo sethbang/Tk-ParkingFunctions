@@ -7,7 +7,7 @@ from pfuncts import *
 import pprint
 
 root = Tk()
-root.title('Parking Function List Selection')
+root.title('Parking Function File Selection')
 root.filename = filedialog.askopenfilename(
     initialdir="generated_io_text_files/park_functions_generated", title="Select A File",
     filetypes=(("csv files", "*.csv"), ("all files", "*.*")))
