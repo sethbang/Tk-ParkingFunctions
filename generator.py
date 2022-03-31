@@ -1,39 +1,42 @@
-from numpy import random
-from pfuncts import *
+import sys
+import threading
 from datetime import datetime
 from tkinter import *
 from tkinter import filedialog
 from tkinter import ttk
-import threading
-import sys
+from numpy import random
+from pfuncts import pigeonhole_check
 
 
 def save_location():
-
+    """Defines a save file name and path"""
     now = datetime.now()
     date_string = now.strftime("%m-%d-%Y-%H-%M-%S")
     f_name = "generated_io_text_files/park_functions_generated/ParkingFunctions_" + date_string
 
     root.filename = filedialog.asksaveasfilename(title="Select Save Location",
-                                                 initialdir="generated_io_text_files/park_functions_outcome",
+                                                 initialdir=
+                                                 "generated_io_text_files/park_functions_outcome",
                                                  initialfile=f_name, defaultextension=".csv",
+                                                 filetypes=(("CSV files", "*.csv"),
+                                                            ("all files", "*.*")))
 
-                                                 filetypes=(("CSV files", "*.csv"), ("all files", "*.*")))
 
-
-def start_gen_thread(event):
-    global gen_thread
+def start_gen_thread():
+    """Starts the thread for the generating function"""
+    global GEN_THREAD
     finish_label.grid_remove()
-    gen_thread = threading.Thread(target=generate)
-    gen_thread.daemon = True
+    GEN_THREAD = threading.Thread(target=generate)
+    GEN_THREAD.daemon = True
     gen_progress.grid()
     gen_progress.start(10)
-    gen_thread.start()
+    GEN_THREAD.start()
     root.after(20, check_gen_thread)
 
 
 def check_gen_thread():
-    if gen_thread.is_alive():
+    """Check if thread work has completed"""
+    if GEN_THREAD.is_alive():
         root.after(20, check_gen_thread)
     else:
         gen_progress.stop()
@@ -42,7 +45,7 @@ def check_gen_thread():
 
 
 def generate():
-
+    """Generates parking functions based on user input spinbox"""
     number_cars = n_spinbox.get()
     number_functions = i_spinbox.get()
     current_gen = []
@@ -58,8 +61,9 @@ def generate():
 
     now = datetime.now()
     date_string = now.strftime("%m-%d-%Y-%H-%M-%S")
-    f_name = "generated_io_text_files/park_functions_generated/ParkingFunctions_" + date_string + ".csv"
-    with open(f_name, "w") as f:
+    f_name = "generated_io_text_files/park_functions_generated/ParkingFunctions_" \
+             + date_string + ".csv"
+    with open(f_name, "w", encoding="utf8") as f:
         for x in current_gen:
             convert_arr = [str(element) for element in x]
             arr_str = ", ".join(convert_arr)
@@ -67,12 +71,12 @@ def generate():
 
 
 def close():
+    """Closes the GUI window"""
     root.destroy()
     sys.exit()
 
 
 if __name__ == "__main__":
-
     root = Tk()
     root.geometry('420x200')
     root.title("Generate Parking Functions")
@@ -92,7 +96,8 @@ if __name__ == "__main__":
     finish_label.grid(row=3, column=2)
     finish_label.grid_remove()
     btn_enter = Button(root, text="Generate", font=("Arial Bold", 13),
-                       relief=RAISED, command=lambda: start_gen_thread(None), bg="green", fg="white")
+                       relief=RAISED, command=start_gen_thread,
+                       bg="green", fg="white")
     btn_enter.grid(row=1, column=2, padx=10, pady=10, sticky="e", rowspan=2, ipady=20)
     btn_close = Button(root, text="Cancel", font=("Arial Bold", 13),
                        relief=RAISED, command=close, bg="red", fg="white")
